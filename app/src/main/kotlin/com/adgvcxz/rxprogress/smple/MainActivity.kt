@@ -1,14 +1,13 @@
 package com.adgvcxz.rxprogress.smple
 
-import android.app.Dialog
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.adgvcxz.rxprogress.ProgressIndicator
+import com.adgvcxz.rxprogress.filter
 import com.adgvcxz.rxprogress.trackProgress
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import java.util.concurrent.TimeUnit
 
 /**
@@ -22,21 +21,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val indicator = ProgressIndicator()
-        val dialog = ProgressDialog(this)
-        indicator.toObservable().subscribe(dialog.isShow())
 
-        findViewById(R.id.button).clicks().flatMap {
+
+        findViewById(R.id.button_1).clicks().flatMap {
             Observable.interval(1, TimeUnit.SECONDS).take(3).trackProgress(indicator)
         }.subscribe()
-    }
-}
 
-fun Dialog.isShow(): Consumer<Boolean> {
-    return Consumer {
-        if (it) {
-            this.show()
-        } else {
-            this.dismiss()
-        }
+        findViewById(R.id.button_2).clicks()
+                .filter(!indicator)
+                .subscribe {
+                    Toast.makeText(this, "Click Button 2", Toast.LENGTH_SHORT).show()
+                }
     }
 }
