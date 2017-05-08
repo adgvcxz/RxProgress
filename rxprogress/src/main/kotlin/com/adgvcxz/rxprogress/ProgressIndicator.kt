@@ -36,11 +36,17 @@ class ProgressIndicator {
     }
 
     fun increment() {
-        number.onNext(++count)
+        synchronized(this) {
+            count++
+            number.onNext(count)
+        }
     }
 
     fun decrement() {
-        number.onNext(--count)
+        synchronized(this) {
+            count--
+            number.onNext(count)
+        }
     }
 
     fun toObservable(): Observable<Boolean> = this.loading
